@@ -1,0 +1,42 @@
+# Model weights
+*.safetensors
+*.ckpt
+*.pt
+*.pth
+*.bin
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# Output directories
+output/
+outputs_*/
+ablation_results/
+logs/
+checkpoint.json
+
+# Virtual environment
+venv/
+.venv/
+env/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Data
+data/
+
+# Environment / secrets
+.env
+
+# Claude Code
+.claude/
