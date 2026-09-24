@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BiGraph-Diffuse: A Bidirectional Diffusion Language Model with Graph-Structured Retrieval for Mental Health Counseling</title>
+<meta name="description" content="BiGraph-Diffuse — a bidirectional diffusion language model with graph-structured retrieval for mental health counseling. Manuscript under review at IEEE Transactions on Affective Computing.">
+<style>
+  :root{
+    --ink:#14171a;
+    --muted:#5b6570;
+    --rule:#e2e6ea;
+    --accent:#1a4a7a;
+    --accent-soft:#f2f6fa;
+    --serif:"Iowan Old Style","Palatino Linotype",Palatino,"Book Antiqua",Georgia,"Times New Roman",serif;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    --mono:"SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    margin:0;
+    background:#fbfbfc;
+    color:var(--ink);
+    font-family:var(--serif);
+    font-size:18px;
+    line-height:1.68;
+    text-rendering:optimizeLegibility;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:760px;margin:0 auto;padding:0 28px 96px}
+
+  /* ---------- masthead ---------- */
+  header.masthead{
+    border-bottom:1px solid var(--rule);
+    background:#fff;
+    margin-bottom:52px;
+  }
+  .masthead-inner{
+    max-width:760px;margin:0 auto;padding:18px 28px;
+    display:flex;align-items:center;justify-content:space-between;
+    gap:16px;flex-wrap:wrap;
+  }
+  .venue{
+    font-family:var(--sans);
+    font-size:11.5px;
+    letter-spacing:.13em;
+    text-transform:uppercase;
+    color:var(--muted);
+    font-weight:600;
+  }
+  .status-pill{
+    font-family:var(--sans);
+    font-size:11.5px;
+    letter-spacing:.04em;
+    font-weight:600;
+    color:#8a5a00;
+    background:#fff6e5;
+    border:1px solid #f0dcb0;
+    border-radius:999px;
+    padding:5px 13px;
+    white-space:nowrap;
+  }
+
+  /* ---------- title block ---------- */
+  h1.title{
+    font-size:33px;
+    line-height:1.26;
+    font-weight:600;
+    letter-spacing:-.012em;
+    margin:0 0 22px;
+  }
+  .authors{
+    font-size:17.5px;
+    line-height:1.75;
+    margin:0 0 6px;
+  }
+  .authors .name{white-space:nowrap}
+  .authors sup{font-size:.66em;color:var(--muted);margin-left:1px}
+  .affil{
+    font-family:var(--sans);
+    font-size:13.5px;
+    line-height:1.72;
+    color:var(--muted);
+    margin:14px 0 0;
+  }
+  .affil sup{color:var(--accent);font-weight:600;margin-right:3px}
+  .affil div{margin-top:3px}
+
+  /* ---------- link row ---------- */
+  .actions{
+    display:flex;flex-wrap:wrap;gap:10px;
+    margin:30px 0 0;
+    padding-top:26px;
+    border-top:1px solid var(--rule);
+  }
+  .btn{
+    font-family:var(--sans);
+    font-size:14px;font-weight:600;
+    text-decoration:none;
+    padding:9px 17px;
+    border-radius:7px;
+    border:1px solid var(--rule);
+    color:var(--accent);
+    background:#fff;
+    transition:background .15s ease,border-color .15s ease;
+  }
+  .btn:hover{background:var(--accent-soft);border-color:#c9d8e6}
+  .btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+  .btn.primary:hover{background:#153d66;border-color:#153d66}
+
+  /* ---------- sections ---------- */
+  section{margin-top:54px}
+  h2{
+    font-family:var(--sans);
+    font-size:12px;
+    font-weight:700;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:var(--accent);
+    margin:0 0 18px;
+    padding-bottom:9px;
+    border-bottom:1px solid var(--rule);
+  }
+  h3{
+    font-family:var(--sans);
+    font-size:15px;
+    font-weight:650;
+    margin:30px 0 8px;
+    letter-spacing:-.005em;
+  }
+  h3:first-of-type{margin-top:8px}
+  p{margin:0 0 17px}
+  .abstract p{text-align:justify;hyphens:auto}
+  .abstract p:last-child{margin-bottom:0}
+
+  /* ---------- key points ---------- */
+  ul.points{list-style:none;margin:0;padding:0}
+  ul.points>li{
+    position:relative;
+    padding-left:26px;
+    margin-bottom:15px;
+  }
+  ul.points>li::before{
+    content:"";
+    position:absolute;
+    left:2px;top:.62em;
+    width:7px;height:7px;
+    border-radius:50%;
+    background:var(--accent);
+    opacity:.5;
+  }
+  ul.points strong{font-weight:650}
+
+  /* ---------- citation ---------- */
+  .cite-card{
+    background:#fff;
+    border:1px solid var(--rule);
+    border-left:3px solid var(--accent);
+    border-radius:0 8px 8px 0;
+    padding:20px 22px;
+  }
+  pre{
+    margin:0;
+    font-family:var(--mono);
+    font-size:12.5px;
+    line-height:1.62;
+    white-space:pre-wrap;
+    word-break:break-word;
+    color:#243040;
+  }
+  .note{
+    font-family:var(--sans);
+    font-size:13px;
+    color:var(--muted);
+    line-height:1.6;
+    margin-top:14px;
+  }
+
+  /* ---------- footer ---------- */
+  footer{
+    margin-top:64px;
+    padding-top:24px;
+    border-top:1px solid var(--rule);
+    font-family:var(--sans);
+    font-size:12.5px;
+    color:var(--muted);
+    line-height:1.7;
+  }
+  footer a{color:var(--muted)}
+  footer a:hover{color:var(--accent)}
+
+  @media (max-width:600px){
+    body{font-size:17px}
+    .wrap{padding:0 20px 72px}
+    .masthead-inner{padding:16px 20px}
+    h1.title{font-size:26px;line-height:1.3}
+    .authors{font-size:16px}
+    section{margin-top:44px}
+  }
+  @media print{
+    body{background:#fff;font-size:11pt}
+    header.masthead{display:none}
+    .actions{display:none}
+    .wrap{max-width:none;padding:0}
+    .cite-card{break-inside:avoid}
+  }
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <div class="masthead-inner">
+    <span class="venue">Technical Report &middot; 2026</span>
+    <span class="status-pill">Under review &middot; IEEE TAFFC</span>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <h1 class="title">BiGraph-Diffuse: A Bidirectional Diffusion Language Model with Graph-Structured Retrieval for Mental Health Counseling</h1>
+
+  <p class="authors">
+    <span class="name">Yuxiang Cheng<sup>1</sup></span>,
+    <span class="name">Quanwei Tang<sup>2</sup></span>,
+    <span class="name">Lvhui Lu<sup>2</sup></span>,
+    <span class="name">Dong Zhang<sup>2</sup></span>,
+    <span class="name">Shoushan Li<sup>2</sup></span>,
+    <span class="name">Erik Cambria<sup>3</sup></span>
+  </p>
+  <p class="affil">
+    <div><sup>1</sup>Dongwu Business School, Soochow University, Suzhou, China</div>
+    <div><sup>2</sup>School of Computer Science and Technology, Soochow University, Suzhou, China</div>
+    <div><sup>3</sup>College of Computing and Data Science, Nanyang Technological University, Singapore</div>
+  </p>
+
+  <div class="actions">
+    <a class="btn primary" href="bigraph-diffuse.pdf">Read the paper (PDF)</a>
+    <a class="btn" href="https://github.com/Chekhov0919/BiGraph-Diffuse">Code repository</a>
+    <a class="btn" href="https://huggingface.co/Chekhov0919/BiGraph-Diffuse">Model weights</a>
+  </div>
+
+  <section class="abstract">
+    <h2>Abstract</h2>
+    <p>Mental health disorders affect hundreds of millions of people around the world, yet access to professional counseling remains severely limited. AI-powered dialogue systems offer a scalable alternative, but existing models face two fundamental challenges. First, they lack the bidirectional understanding needed to capture the layered nature of emotional expression, particularly in cases of progressive disclosure, where clients often present symptoms at the surface level while concealing deeper trauma. Autoregressive models process information sequentially and cannot revise early interpretations when new evidence emerges later in the conversation. Second, they fail to effectively incorporate the relational knowledge that underlies clinical reasoning.</p>
+    <p>In this paper, we propose BiGraph-Diffuse, the first large-scale diffusion language model tailored for the counseling domain. We further introduce BiGraph-RAG, a relation-free graph-structured retrieval strategy that relies only on lightweight entity extraction and semantic linking. This design preserves inferential pathways from observable symptoms to potential underlying causes, while incurring zero LLM token cost during indexing. Importantly, these two modules are not merely combined but mutually reinforcing. The diffusion model provides a holistic bidirectional context, enabling the system to defer premature judgments during progressive disclosure. Meanwhile, graph-based retrieval captures the structured interconnections of clinical knowledge. Extensive experiments demonstrate the effectiveness of BiGraph-Diffuse, and we further provide a solid theoretical analysis to support its design.</p>
+  </section>
+
+  <section>
+    <h2>Contributions</h2>
+    <ul class="points">
+      <li><strong>A bidirectional diffusion backbone for counseling.</strong> BiGraph-Diffuse generates responses by iterative denoising over the full dialogue context rather than left-to-right decoding, so evidence that surfaces later in a conversation can still revise an earlier reading — the behavior that progressive disclosure demands.</li>
+      <li><strong>BiGraph-RAG.</strong> An entity&ndash;sentence bipartite graph connects surface symptoms, underlying causes, and intervention strategies. Retrieval is seeded by query entities, propagated through Personalized PageRank, and requires no LLM calls during indexing.</li>
+      <li><strong>Mutually reinforcing components.</strong> The diffusion model supplies holistic context; the graph supplies structured clinical relations. We show the two are complementary rather than additive, and support the design with theoretical analysis.</li>
+      <li><strong>Released artifacts.</strong> LoRA adapter weights and the retrieval and inference implementations are publicly available.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>BibTeX</h2>
+    <div class="cite-card">
+<pre>@misc{cheng2026bigraphdiffuse,
+  title        = {{BiGraph-Diffuse}: A Bidirectional Diffusion Language
+                  Model with Graph-Structured Retrieval for Mental
+                  Health Counseling},
+  author       = {Cheng, Yuxiang and Tang, Quanwei and Lu, Lvhui and
+                  Zhang, Dong and Li, Shoushan and Cambria, Erik},
+  year         = {2026},
+  howpublished = {Technical report},
+  note         = {Manuscript under review at IEEE Transactions on
+                  Affective Computing},
+  url          = {https://chekhov0919.github.io/BiGraph-Diffuse/}
+}</pre>
+      <p class="note">This work is currently under review. The citation above reflects that status and will be updated with the final venue and volume information upon publication. Please check back before citing.</p>
+    </div>
+  </section>
+
+  <footer>
+    <p>Contact: <a href="mailto:chengyuxiang@example.com">chengyuxiang@example.com</a></p>
+    <p>Manuscript under review at <em>IEEE Transactions on Affective Computing</em>. &copy; 2026 the authors.</p>
+  </footer>
+
+</div>
+
+</body>
+</html>
