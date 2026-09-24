@@ -7,203 +7,278 @@
 <meta name="description" content="BiGraph-Diffuse — a bidirectional diffusion language model with graph-structured retrieval for mental health counseling. Manuscript under review at IEEE Transactions on Affective Computing.">
 <style>
   :root{
-    --ink:#14171a;
-    --muted:#5b6570;
-    --rule:#e2e6ea;
-    --accent:#1a4a7a;
-    --accent-soft:#f2f6fa;
-    --serif:"Iowan Old Style","Palatino Linotype",Palatino,"Book Antiqua",Georgia,"Times New Roman",serif;
-    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
-    --mono:"SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;
+    --ink:#0f1419;
+    --ink-soft:#2b3440;
+    --muted:#5f6b7a;
+    --faint:#8a95a3;
+    --line:#e3e8ee;
+    --line-soft:#eef2f6;
+    --accent:#0f4c75;
+    --accent-deep:#0a3a5a;
+    --accent-tint:#eef4f9;
+    --gold:#9a6b1f;
+    --gold-tint:#fdf7ea;
+    --gold-line:#f0e0bd;
+    --paper:#ffffff;
+    --serif:"Iowan Old Style","Palatino Linotype",Palatino,"Book Antiqua","Source Serif 4",Georgia,"Times New Roman",serif;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,"Helvetica Neue",Arial,sans-serif;
+    --mono:"SFMono-Regular","JetBrains Mono",Consolas,"Liberation Mono",Menlo,monospace;
+    --shadow-sm:0 1px 2px rgba(15,20,25,.04), 0 2px 8px rgba(15,20,25,.04);
+    --shadow-md:0 2px 4px rgba(15,20,25,.03), 0 12px 32px -8px rgba(15,20,25,.10);
   }
   *{box-sizing:border-box}
-  html{-webkit-text-size-adjust:100%}
+  html{-webkit-text-size-adjust:100%; scroll-behavior:smooth}
+
   body{
     margin:0;
-    background:#fbfbfc;
     color:var(--ink);
     font-family:var(--serif);
-    font-size:18px;
-    line-height:1.68;
+    font-size:17.5px;
+    line-height:1.72;
     text-rendering:optimizeLegibility;
     -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
+    background:
+      radial-gradient(1100px 620px at 12% -8%, #f2f7fb 0%, rgba(242,247,251,0) 62%),
+      radial-gradient(900px 520px at 92% 4%, #f6f3ec 0%, rgba(246,243,236,0) 58%),
+      linear-gradient(180deg,#fbfcfd 0%, #f7f9fb 100%);
+    background-attachment:fixed;
   }
-  .wrap{max-width:760px;margin:0 auto;padding:0 28px 96px}
 
   /* ---------- masthead ---------- */
-  header.masthead{
-    border-bottom:1px solid var(--rule);
-    background:#fff;
-    margin-bottom:52px;
+  .masthead{
+    position:sticky; top:0; z-index:50;
+    background:rgba(255,255,255,.82);
+    -webkit-backdrop-filter:saturate(180%) blur(14px);
+    backdrop-filter:saturate(180%) blur(14px);
+    border-bottom:1px solid var(--line-soft);
   }
   .masthead-inner{
-    max-width:760px;margin:0 auto;padding:18px 28px;
-    display:flex;align-items:center;justify-content:space-between;
-    gap:16px;flex-wrap:wrap;
+    max-width:820px;margin:0 auto;padding:15px 32px;
+    display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;
   }
   .venue{
-    font-family:var(--sans);
-    font-size:11.5px;
-    letter-spacing:.13em;
-    text-transform:uppercase;
-    color:var(--muted);
-    font-weight:600;
+    font-family:var(--sans);font-size:11px;font-weight:650;
+    letter-spacing:.16em;text-transform:uppercase;color:var(--faint);
   }
-  .status-pill{
-    font-family:var(--sans);
-    font-size:11.5px;
-    letter-spacing:.04em;
-    font-weight:600;
-    color:#8a5a00;
-    background:#fff6e5;
-    border:1px solid #f0dcb0;
-    border-radius:999px;
-    padding:5px 13px;
-    white-space:nowrap;
+  .status{
+    display:inline-flex;align-items:center;gap:7px;
+    font-family:var(--sans);font-size:11.5px;font-weight:600;
+    letter-spacing:.02em;color:var(--gold);
+    background:var(--gold-tint);border:1px solid var(--gold-line);
+    border-radius:99px;padding:5px 13px;white-space:nowrap;
+  }
+  .status .dot{
+    width:6px;height:6px;border-radius:50%;background:#d69a2a;
+    box-shadow:0 0 0 3px rgba(214,154,42,.18);
   }
 
-  /* ---------- title block ---------- */
-  h1.title{
-    font-size:33px;
-    line-height:1.26;
-    font-weight:600;
-    letter-spacing:-.012em;
-    margin:0 0 22px;
+  /* ---------- layout ---------- */
+  .wrap{max-width:820px;margin:0 auto;padding:44px 32px 88px}
+
+  /* ---------- hero card ---------- */
+  .hero{
+    position:relative;
+    background:var(--paper);
+    border:1px solid var(--line);
+    border-radius:16px;
+    padding:46px 48px 40px;
+    box-shadow:var(--shadow-md);
+    overflow:hidden;
   }
+  .hero::before{
+    content:"";position:absolute;inset:0 0 auto 0;height:3px;
+    background:linear-gradient(90deg,var(--accent) 0%, #2d7ba8 42%, #c9a961 100%);
+  }
+  .hero::after{
+    content:"";position:absolute;top:-70px;right:-70px;width:230px;height:230px;
+    border-radius:50%;
+    background:radial-gradient(circle,rgba(15,76,117,.055) 0%, rgba(15,76,117,0) 70%);
+    pointer-events:none;
+  }
+
+  .kicker{
+    font-family:var(--sans);font-size:10.5px;font-weight:700;
+    letter-spacing:.2em;text-transform:uppercase;color:var(--accent);
+    margin:0 0 18px;display:flex;align-items:center;gap:10px;
+  }
+  .kicker::after{
+    content:"";flex:1;height:1px;
+    background:linear-gradient(90deg,var(--line) 0%, rgba(227,232,238,0) 100%);
+  }
+
+  h1.title{
+    font-size:31px;line-height:1.28;font-weight:600;
+    letter-spacing:-.015em;margin:0 0 26px;color:var(--ink);
+    text-wrap:balance;
+  }
+
   .authors{
-    font-size:17.5px;
-    line-height:1.75;
-    margin:0 0 6px;
+    font-size:16.5px;line-height:1.85;margin:0;color:var(--ink-soft);
   }
   .authors .name{white-space:nowrap}
-  .authors sup{font-size:.66em;color:var(--muted);margin-left:1px}
-  .affil{
-    font-family:var(--sans);
-    font-size:13.5px;
-    line-height:1.72;
-    color:var(--muted);
-    margin:14px 0 0;
+  .authors sup{
+    font-size:.63em;color:var(--accent);font-weight:600;
+    margin-left:1.5px;letter-spacing:0;
   }
-  .affil sup{color:var(--accent);font-weight:600;margin-right:3px}
-  .affil div{margin-top:3px}
 
-  /* ---------- link row ---------- */
-  .actions{
-    display:flex;flex-wrap:wrap;gap:10px;
-    margin:30px 0 0;
-    padding-top:26px;
-    border-top:1px solid var(--rule);
+  .affil{
+    font-family:var(--sans);font-size:13px;line-height:1.78;
+    color:var(--muted);margin:20px 0 0;
+    padding-top:18px;border-top:1px solid var(--line-soft);
   }
+  .affil div{margin-top:4px}
+  .affil div:first-child{margin-top:0}
+  .affil sup{
+    display:inline-block;min-width:15px;
+    color:var(--accent);font-weight:700;font-size:10.5px;
+  }
+
+  /* ---------- actions ---------- */
+  .actions{display:flex;flex-wrap:wrap;gap:9px;margin:32px 0 0}
   .btn{
-    font-family:var(--sans);
-    font-size:14px;font-weight:600;
-    text-decoration:none;
-    padding:9px 17px;
-    border-radius:7px;
-    border:1px solid var(--rule);
-    color:var(--accent);
-    background:#fff;
-    transition:background .15s ease,border-color .15s ease;
+    display:inline-flex;align-items:center;gap:8px;
+    font-family:var(--sans);font-size:13.5px;font-weight:600;
+    text-decoration:none;padding:10px 18px;border-radius:9px;
+    border:1px solid var(--line);color:var(--accent);background:#fff;
+    transition:all .18s cubic-bezier(.4,0,.2,1);
+    box-shadow:var(--shadow-sm);
   }
-  .btn:hover{background:var(--accent-soft);border-color:#c9d8e6}
-  .btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
-  .btn.primary:hover{background:#153d66;border-color:#153d66}
+  .btn:hover{
+    background:var(--accent-tint);border-color:#c5d9e8;
+    transform:translateY(-1px);
+    box-shadow:0 4px 12px -2px rgba(15,76,117,.15);
+  }
+  .btn.primary{
+    background:linear-gradient(180deg,#125a89 0%, var(--accent) 100%);
+    border-color:var(--accent-deep);color:#fff;
+    box-shadow:0 2px 6px -1px rgba(15,76,117,.35);
+  }
+  .btn.primary:hover{
+    background:linear-gradient(180deg,#0f4c75 0%, var(--accent-deep) 100%);
+    box-shadow:0 6px 16px -3px rgba(15,76,117,.42);
+  }
+  .btn svg{width:14px;height:14px;flex:none;opacity:.85}
 
   /* ---------- sections ---------- */
-  section{margin-top:54px}
+  section{margin-top:46px}
   h2{
-    font-family:var(--sans);
-    font-size:12px;
-    font-weight:700;
-    letter-spacing:.14em;
-    text-transform:uppercase;
-    color:var(--accent);
-    margin:0 0 18px;
-    padding-bottom:9px;
-    border-bottom:1px solid var(--rule);
+    display:flex;align-items:center;gap:14px;
+    font-family:var(--sans);font-size:11.5px;font-weight:700;
+    letter-spacing:.16em;text-transform:uppercase;color:var(--accent);
+    margin:0 0 22px;
   }
-  h3{
-    font-family:var(--sans);
-    font-size:15px;
-    font-weight:650;
-    margin:30px 0 8px;
-    letter-spacing:-.005em;
+  h2::after{
+    content:"";flex:1;height:1px;
+    background:linear-gradient(90deg,var(--line) 0%, rgba(227,232,238,0) 92%);
   }
-  h3:first-of-type{margin-top:8px}
-  p{margin:0 0 17px}
-  .abstract p{text-align:justify;hyphens:auto}
+
+  /* ---------- abstract ---------- */
+  .abstract-card{
+    background:var(--paper);border:1px solid var(--line);
+    border-radius:14px;padding:36px 42px 32px;
+    box-shadow:var(--shadow-sm);
+  }
+  .abstract p{
+    margin:0 0 18px;text-align:justify;hyphens:auto;
+    color:var(--ink-soft);line-height:1.76;
+  }
   .abstract p:last-child{margin-bottom:0}
+  .abstract p:first-of-type::first-letter{
+    float:left;font-size:52px;line-height:.86;
+    padding:5px 11px 0 0;font-weight:600;color:var(--accent);
+    font-family:var(--serif);
+  }
 
-  /* ---------- key points ---------- */
-  ul.points{list-style:none;margin:0;padding:0}
-  ul.points>li{
+  /* ---------- contributions ---------- */
+  .points{list-style:none;margin:0;padding:0;display:grid;gap:14px}
+  .points>li{
     position:relative;
-    padding-left:26px;
-    margin-bottom:15px;
+    background:var(--paper);border:1px solid var(--line);
+    border-left:2px solid var(--accent);
+    border-radius:0 12px 12px 0;
+    padding:20px 24px;
+    box-shadow:var(--shadow-sm);
+    transition:transform .18s ease, box-shadow .18s ease;
   }
-  ul.points>li::before{
-    content:"";
-    position:absolute;
-    left:2px;top:.62em;
-    width:7px;height:7px;
-    border-radius:50%;
-    background:var(--accent);
-    opacity:.5;
+  .points>li:hover{
+    transform:translateX(3px);
+    box-shadow:0 2px 4px rgba(15,20,25,.03), 0 10px 24px -6px rgba(15,20,25,.10);
   }
-  ul.points strong{font-weight:650}
+  .points .lead{
+    display:block;font-family:var(--sans);font-size:14px;font-weight:650;
+    color:var(--accent);margin-bottom:6px;letter-spacing:-.005em;
+  }
+  .points .body{color:var(--ink-soft);line-height:1.7;font-size:16.5px}
 
-  /* ---------- citation ---------- */
-  .cite-card{
-    background:#fff;
-    border:1px solid var(--rule);
-    border-left:3px solid var(--accent);
-    border-radius:0 8px 8px 0;
-    padding:20px 22px;
+  /* ---------- bibtex ---------- */
+  .cite{
+    background:linear-gradient(180deg,#fcfdfe 0%, #f8fafc 100%);
+    border:1px solid var(--line);border-radius:14px;
+    overflow:hidden;box-shadow:var(--shadow-sm);
   }
+  .cite-bar{
+    display:flex;align-items:center;justify-content:space-between;gap:12px;
+    padding:11px 18px;background:var(--paper);
+    border-bottom:1px solid var(--line-soft);
+  }
+  .cite-label{
+    font-family:var(--sans);font-size:11px;font-weight:650;
+    letter-spacing:.12em;text-transform:uppercase;color:var(--faint);
+  }
+  .copy{
+    font-family:var(--sans);font-size:12px;font-weight:600;
+    color:var(--accent);background:var(--accent-tint);
+    border:1px solid #d3e3ee;border-radius:7px;
+    padding:5px 12px;cursor:pointer;
+    transition:all .16s ease;
+  }
+  .copy:hover{background:#e3eef6;border-color:#bdd4e4}
+  .copy.done{color:#1c6b3f;background:#e9f6ee;border-color:#c2e2cf}
   pre{
-    margin:0;
-    font-family:var(--mono);
-    font-size:12.5px;
-    line-height:1.62;
-    white-space:pre-wrap;
-    word-break:break-word;
-    color:#243040;
+    margin:0;padding:22px 24px;
+    font-family:var(--mono);font-size:12.5px;line-height:1.66;
+    white-space:pre-wrap;word-break:break-word;
+    color:#1e2a38;
   }
-  .note{
-    font-family:var(--sans);
-    font-size:13px;
-    color:var(--muted);
-    line-height:1.6;
-    margin-top:14px;
+  .cite-note{
+    font-family:var(--sans);font-size:12.5px;line-height:1.65;
+    color:var(--muted);margin:16px 0 0;
+    padding:14px 18px;background:var(--gold-tint);
+    border:1px solid var(--gold-line);border-radius:10px;
   }
+  .cite-note strong{color:var(--gold);font-weight:650}
 
   /* ---------- footer ---------- */
   footer{
-    margin-top:64px;
-    padding-top:24px;
-    border-top:1px solid var(--rule);
-    font-family:var(--sans);
-    font-size:12.5px;
-    color:var(--muted);
-    line-height:1.7;
+    margin-top:56px;padding-top:26px;
+    border-top:1px solid var(--line);
+    font-family:var(--sans);font-size:12.5px;
+    color:var(--faint);line-height:1.8;text-align:center;
   }
-  footer a{color:var(--muted)}
-  footer a:hover{color:var(--accent)}
+  footer a{color:var(--muted);text-decoration:none;border-bottom:1px solid var(--line);transition:all .16s}
+  footer a:hover{color:var(--accent);border-color:var(--accent)}
 
-  @media (max-width:600px){
+  @media (max-width:680px){
     body{font-size:17px}
-    .wrap{padding:0 20px 72px}
-    .masthead-inner{padding:16px 20px}
-    h1.title{font-size:26px;line-height:1.3}
-    .authors{font-size:16px}
-    section{margin-top:44px}
+    .wrap{padding:28px 20px 64px}
+    .masthead-inner{padding:13px 20px}
+    .hero{padding:34px 26px 30px;border-radius:14px}
+    h1.title{font-size:24px;line-height:1.32}
+    .authors{font-size:15.5px}
+    .abstract-card{padding:26px 24px 22px}
+    .abstract p:first-of-type::first-letter{font-size:42px;padding:4px 9px 0 0}
+    .points>li{padding:17px 19px}
+    pre{padding:18px 18px;font-size:11.5px}
+    section{margin-top:38px}
+    .actions{gap:8px}
+    .btn{padding:9px 15px;font-size:13px}
   }
   @media print{
     body{background:#fff;font-size:11pt}
-    header.masthead{display:none}
-    .actions{display:none}
+    .masthead,.actions,.copy,.cite-bar{display:none}
     .wrap{max-width:none;padding:0}
-    .cite-card{break-inside:avoid}
+    .hero,.abstract-card,.points>li,.cite{box-shadow:none;border-radius:8px;break-inside:avoid}
   }
 </style>
 </head>
@@ -212,54 +287,86 @@
 <header class="masthead">
   <div class="masthead-inner">
     <span class="venue">Technical Report &middot; 2026</span>
-    <span class="status-pill">Under review &middot; IEEE TAFFC</span>
+    <span class="status"><span class="dot"></span>Under review &middot; IEEE TAFFC</span>
   </div>
 </header>
 
 <div class="wrap">
 
-  <h1 class="title">BiGraph-Diffuse: A Bidirectional Diffusion Language Model with Graph-Structured Retrieval for Mental Health Counseling</h1>
+  <div class="hero">
+    <p class="kicker">Preprint</p>
 
-  <p class="authors">
-    <span class="name">Yuxiang Cheng<sup>1</sup></span>,
-    <span class="name">Quanwei Tang<sup>2</sup></span>,
-    <span class="name">Lvhui Lu<sup>2</sup></span>,
-    <span class="name">Dong Zhang<sup>2</sup></span>,
-    <span class="name">Shoushan Li<sup>2</sup></span>,
-    <span class="name">Erik Cambria<sup>3</sup></span>
-  </p>
-  <p class="affil">
-    <div><sup>1</sup>Dongwu Business School, Soochow University, Suzhou, China</div>
-    <div><sup>2</sup>School of Computer Science and Technology, Soochow University, Suzhou, China</div>
-    <div><sup>3</sup>College of Computing and Data Science, Nanyang Technological University, Singapore</div>
-  </p>
+    <h1 class="title">BiGraph-Diffuse: A Bidirectional Diffusion Language Model with Graph-Structured Retrieval for Mental Health Counseling</h1>
 
-  <div class="actions">
-    <a class="btn primary" href="bigraph-diffuse.pdf">Read the paper (PDF)</a>
-    <a class="btn" href="https://github.com/Chekhov0919/BiGraph-Diffuse">Code repository</a>
-    <a class="btn" href="https://huggingface.co/Chekhov0919/BiGraph-Diffuse">Model weights</a>
+    <p class="authors">
+      <span class="name">Yuxiang Cheng<sup>1</sup></span>,
+      <span class="name">Quanwei Tang<sup>2</sup></span>,
+      <span class="name">Lvhui Lu<sup>2</sup></span>,
+      <span class="name">Dong Zhang<sup>2</sup></span>,
+      <span class="name">Shoushan Li<sup>2</sup></span>,
+      <span class="name">Erik Cambria<sup>3</sup></span>
+    </p>
+
+    <div class="affil">
+      <div><sup>1</sup>Dongwu Business School, Soochow University, Suzhou, China</div>
+      <div><sup>2</sup>School of Computer Science and Technology, Soochow University, Suzhou, China</div>
+      <div><sup>3</sup>College of Computing and Data Science, Nanyang Technological University, Singapore</div>
+    </div>
+
+    <div class="actions">
+      <a class="btn primary" href="bigraph-diffuse.pdf">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        Read the paper
+      </a>
+      <a class="btn" href="https://github.com/Chekhov0919/BiGraph-Diffuse">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+        Code
+      </a>
+      <a class="btn" href="https://huggingface.co/Chekhov0919/BiGraph-Diffuse">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+        Model weights
+      </a>
+    </div>
   </div>
 
   <section class="abstract">
     <h2>Abstract</h2>
-    <p>Mental health disorders affect hundreds of millions of people around the world, yet access to professional counseling remains severely limited. AI-powered dialogue systems offer a scalable alternative, but existing models face two fundamental challenges. First, they lack the bidirectional understanding needed to capture the layered nature of emotional expression, particularly in cases of progressive disclosure, where clients often present symptoms at the surface level while concealing deeper trauma. Autoregressive models process information sequentially and cannot revise early interpretations when new evidence emerges later in the conversation. Second, they fail to effectively incorporate the relational knowledge that underlies clinical reasoning.</p>
-    <p>In this paper, we propose BiGraph-Diffuse, the first large-scale diffusion language model tailored for the counseling domain. We further introduce BiGraph-RAG, a relation-free graph-structured retrieval strategy that relies only on lightweight entity extraction and semantic linking. This design preserves inferential pathways from observable symptoms to potential underlying causes, while incurring zero LLM token cost during indexing. Importantly, these two modules are not merely combined but mutually reinforcing. The diffusion model provides a holistic bidirectional context, enabling the system to defer premature judgments during progressive disclosure. Meanwhile, graph-based retrieval captures the structured interconnections of clinical knowledge. Extensive experiments demonstrate the effectiveness of BiGraph-Diffuse, and we further provide a solid theoretical analysis to support its design.</p>
+    <div class="abstract-card">
+      <p>Mental health disorders affect hundreds of millions of people around the world, yet access to professional counseling remains severely limited. AI-powered dialogue systems offer a scalable alternative, but existing models face two fundamental challenges. First, they lack the bidirectional understanding needed to capture the layered nature of emotional expression, particularly in cases of progressive disclosure, where clients often present symptoms at the surface level while concealing deeper trauma. Autoregressive models process information sequentially and cannot revise early interpretations when new evidence emerges later in the conversation. Second, they fail to effectively incorporate the relational knowledge that underlies clinical reasoning.</p>
+      <p>In this paper, we propose BiGraph-Diffuse, the first large-scale diffusion language model tailored for the counseling domain. We further introduce BiGraph-RAG, a relation-free graph-structured retrieval strategy that relies only on lightweight entity extraction and semantic linking. This design preserves inferential pathways from observable symptoms to potential underlying causes, while incurring zero LLM token cost during indexing. Importantly, these two modules are not merely combined but mutually reinforcing. The diffusion model provides a holistic bidirectional context, enabling the system to defer premature judgments during progressive disclosure. Meanwhile, graph-based retrieval captures the structured interconnections of clinical knowledge. Extensive experiments demonstrate the effectiveness of BiGraph-Diffuse, and we further provide a solid theoretical analysis to support its design.</p>
+    </div>
   </section>
 
   <section>
     <h2>Contributions</h2>
     <ul class="points">
-      <li><strong>A bidirectional diffusion backbone for counseling.</strong> BiGraph-Diffuse generates responses by iterative denoising over the full dialogue context rather than left-to-right decoding, so evidence that surfaces later in a conversation can still revise an earlier reading — the behavior that progressive disclosure demands.</li>
-      <li><strong>BiGraph-RAG.</strong> An entity&ndash;sentence bipartite graph connects surface symptoms, underlying causes, and intervention strategies. Retrieval is seeded by query entities, propagated through Personalized PageRank, and requires no LLM calls during indexing.</li>
-      <li><strong>Mutually reinforcing components.</strong> The diffusion model supplies holistic context; the graph supplies structured clinical relations. We show the two are complementary rather than additive, and support the design with theoretical analysis.</li>
-      <li><strong>Released artifacts.</strong> LoRA adapter weights and the retrieval and inference implementations are publicly available.</li>
+      <li>
+        <span class="lead">A bidirectional diffusion backbone for counseling</span>
+        <span class="body">BiGraph-Diffuse generates responses by iterative denoising over the full dialogue context rather than left-to-right decoding, so evidence that surfaces later in a conversation can still revise an earlier reading — the behavior that progressive disclosure demands.</span>
+      </li>
+      <li>
+        <span class="lead">BiGraph-RAG</span>
+        <span class="body">An entity&ndash;sentence bipartite graph connects surface symptoms, underlying causes, and intervention strategies. Retrieval is seeded by query entities, propagated through Personalized PageRank, and requires no LLM calls during indexing.</span>
+      </li>
+      <li>
+        <span class="lead">Mutually reinforcing components</span>
+        <span class="body">The diffusion model supplies holistic context; the graph supplies structured clinical relations. We show the two are complementary rather than additive, and support the design with theoretical analysis.</span>
+      </li>
+      <li>
+        <span class="lead">Released artifacts</span>
+        <span class="body">LoRA adapter weights and the retrieval and inference implementations are publicly available.</span>
+      </li>
     </ul>
   </section>
 
   <section>
-    <h2>BibTeX</h2>
-    <div class="cite-card">
-<pre>@misc{cheng2026bigraphdiffuse,
+    <h2>Citation</h2>
+    <div class="cite">
+      <div class="cite-bar">
+        <span class="cite-label">BibTeX</span>
+        <button class="copy" id="copyBtn" type="button">Copy</button>
+      </div>
+<pre id="bibtex">@misc{cheng2026bigraphdiffuse,
   title        = {{BiGraph-Diffuse}: A Bidirectional Diffusion Language
                   Model with Graph-Structured Retrieval for Mental
                   Health Counseling},
@@ -271,16 +378,42 @@
                   Affective Computing},
   url          = {https://chekhov0919.github.io/BiGraph-Diffuse/}
 }</pre>
-      <p class="note">This work is currently under review. The citation above reflects that status and will be updated with the final venue and volume information upon publication. Please check back before citing.</p>
     </div>
+    <p class="cite-note"><strong>Note.</strong> This work is currently under review. The citation above reflects that status and will be updated with the final venue and volume information upon publication. Please check back before citing.</p>
   </section>
 
   <footer>
     <p>Contact: <a href="mailto:2412410039@stu.suda.edu.cn">2412410039@stu.suda.edu.cn</a></p>
-    <p>Manuscript under review at <em>IEEE Transactions on Affective Computing</em>. &copy; 2026 the authors.</p>
+    <p>Manuscript under review at <em>IEEE Transactions on Affective Computing</em>.<br>&copy; 2026 the authors.</p>
   </footer>
 
 </div>
+
+<script>
+(function(){
+  var btn = document.getElementById('copyBtn');
+  var pre = document.getElementById('bibtex');
+  if(!btn || !pre) return;
+  btn.addEventListener('click', function(){
+    var text = pre.textContent;
+    var done = function(){
+      btn.textContent = 'Copied';
+      btn.classList.add('done');
+      setTimeout(function(){ btn.textContent='Copy'; btn.classList.remove('done'); }, 1800);
+    };
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).then(done).catch(function(){ fallback(); });
+    } else { fallback(); }
+    function fallback(){
+      var ta = document.createElement('textarea');
+      ta.value = text; ta.style.position='fixed'; ta.style.opacity='0';
+      document.body.appendChild(ta); ta.select();
+      try{ document.execCommand('copy'); done(); }catch(e){}
+      document.body.removeChild(ta);
+    }
+  });
+})();
+</script>
 
 </body>
 </html>
