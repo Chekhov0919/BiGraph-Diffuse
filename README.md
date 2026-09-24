@@ -1,4 +1,4 @@
-# BiGraph-Diffuse: Bipartite Graph Retrieval-Augmented Diffusion Models for Empathetic Counseling
+# BiGraph-Diffuse: A Bidirectional Diffusion Language Model with Graph-Structured Retrieval for Mental Health Counseling
 
 This repository contains the core implementation of **BiGraph-Diffuse**, a retrieval-augmented diffusion language model for mental health counseling dialogues. Our method combines diffusion-based text generation with a novel bipartite graph retrieval mechanism (**BiGraph-RAG**) to produce empathetic, context-aware counselor responses.
 
